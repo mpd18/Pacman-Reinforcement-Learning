@@ -85,6 +85,7 @@ class QLearningAgent(ReinforcementAgent):
             qValue = self.getQValue(state, legalAction)
             if qValue > bestQ:
                 action = legalAction
+                bestQ = qValue
         return action
 
     def getAction(self, state):
@@ -120,8 +121,9 @@ class QLearningAgent(ReinforcementAgent):
           it will be called on your behalf
         """
         "*** YOUR CODE HERE ***"
-        maxQk = self.computeValueFromQValues(nextState)
-        self.values[ (state, action) ] = reward + maxQk * self.discount
+        maxQk, a = self.computeValueFromQValues(nextState), self.alpha
+        approximate = reward + maxQk * self.discount
+        self.values[ (state, action) ] = (1-a) * self.getQValue(state,action)+a*approximate
 
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)
