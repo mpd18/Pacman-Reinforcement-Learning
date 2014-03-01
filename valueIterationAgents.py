@@ -74,7 +74,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         "*** YOUR CODE HERE ***"
         stateValue, qValue = self.values[state], 0
         for nextState, prob in self.mdp.getTransitionStatesAndProbs(state, action):
-            qValue += prob * self.discount * self.values[nextState] + self.mdp.getReward(state, action, nextState)
+            qValue += prob * (self.discount * self.values[nextState] + self.mdp.getReward(state, action, nextState))
         return qValue
 
     def computeActionFromValues(self, state):
@@ -89,9 +89,9 @@ class ValueIterationAgent(ValueEstimationAgent):
         "*** YOUR CODE HERE ***"
         actions, maxValue, decision = self.mdp.getPossibleActions(state), -float('inf'), None
         for action in actions:
-            nextState = self.mdp.getTransitionStatesAndProbs(state, action)[0]
-            if self.values[nextState] > maxValue:
-                maxValue = self.values[nextState]
+            actionValue = self.computeQValueFromValues(state, action)
+            if actionValue > maxValue:
+                maxValue = actionValue
                 decision = action
         return decision
 
